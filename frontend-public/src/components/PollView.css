@@ -1,0 +1,133 @@
+.poll-view {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.poll-view.submitted {
+  max-width: 900px;
+}
+
+.btn-back-small {
+  background-color: transparent;
+  color: #667eea;
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  border: 2px solid #667eea;
+}
+
+.poll-content h2 {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.poll-description {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+}
+
+.options-container {
+  margin: 30px 0;
+}
+
+.option-label {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  background: #f5f5f5;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.option-label:hover {
+  background: #ebebeb;
+  transform: translateX(5px);
+}
+
+.option-label input {
+  margin-right: 15px;
+  width: 20px;
+  height: 20px;
+}
+
+.option-label span {
+  flex: 1;
+}
+
+.helper-text {
+  color: #888;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.text-input-container {
+  margin: 30px 0;
+}
+
+.text-input-container textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.text-input-container textarea:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 18px;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  margin-top: 20px;
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.success-message {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white;
+  border-radius: 10px;
+}
+
+.success-message h2 {
+  color: white;
+  margin-bottom: 10px;
+}
+
+.success-message p {
+  opacity: 0.95;
+  font-size: 1.1rem;
+}
+
+.btn-back {
+  width: 100%;
+  padding: 15px;
+  background-color: #667eea;
+  color: white;
+  margin-top: 30px;
+  font-size: 1.1rem;
+}

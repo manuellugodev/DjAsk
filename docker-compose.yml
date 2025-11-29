@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: djask-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - SECRET_KEY=your-secret-key-change-in-production
+      - DATABASE_URL=sqlite:///djask.db
+    volumes:
+      - ./backend:/app
+      - backend-db:/app
+    networks:
+      - djask-network
+    restart: unless-stopped
+
+  frontend-manager:
+    build: ./frontend-manager
+    container_name: djask-manager
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend-manager:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - djask-network
+    restart: unless-stopped
+
+  frontend-public:
+    build: ./frontend-public
+    container_name: djask-public
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./frontend-public:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - djask-network
+    restart: unless-stopped
+
+volumes:
+  backend-db:
+
+networks:
+  djask-network:
+    driver: bridge

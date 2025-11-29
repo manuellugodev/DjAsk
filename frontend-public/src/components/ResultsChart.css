@@ -1,0 +1,43 @@
+.results-chart {
+  margin: 30px 0;
+}
+
+.results-chart h3 {
+  color: #333;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+.chart-container {
+  height: 400px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.text-responses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.text-response-item {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #667eea;
+}
+
+.text-response-item p {
+  color: #333;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.more-responses {
+  text-align: center;
+  color: #888;
+  font-size: 0.95rem;
+  margin-top: 10px;
+}

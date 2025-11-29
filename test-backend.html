@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend Test</title>
+</head>
+<body>
+    <h1>Backend Connection Test</h1>
+    <button onclick="testBackend()">Test Backend Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testBackend() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing...</p>';
+
+            try {
+                // Test basic connection
+                const response = await fetch('http://localhost:5000');
+                const data = await response.json();
+                resultDiv.innerHTML = `
+                    <h3 style="color: green;">✓ Backend is running!</h3>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+
+                // Test API endpoint
+                const pollsResponse = await fetch('http://localhost:5000/api/polls');
+                const polls = await pollsResponse.json();
+                resultDiv.innerHTML += `
+                    <h3 style="color: green;">✓ API is working!</h3>
+                    <pre>${JSON.stringify(polls, null, 2)}</pre>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <h3 style="color: red;">✗ Error:</h3>
+                    <pre>${error.message}</pre>
+                    <p>Make sure Docker containers are running: <code>sudo docker-compose up</code></p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

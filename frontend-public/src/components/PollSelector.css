@@ -1,0 +1,53 @@
+.poll-selector {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.poll-selector h2 {
+  text-align: center;
+  color: #667eea;
+  margin-bottom: 30px;
+  font-size: 2rem;
+}
+
+.polls-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.poll-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.poll-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+}
+
+.poll-card h3 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.poll-card p {
+  margin-bottom: 20px;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.poll-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  opacity: 0.85;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  padding-top: 15px;
+}
