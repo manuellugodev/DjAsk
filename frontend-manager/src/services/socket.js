@@ -1,7 +1,16 @@
 import { io } from 'socket.io-client';
 
-// In Docker, connect directly to localhost:5000 from browser
-const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
+// Dynamically use the same host that served the page, but port 5000 for WebSocket
+const getSocketUrl = () => {
+  if (import.meta.env.VITE_SOCKET_URL) {
+    return import.meta.env.VITE_SOCKET_URL;
+  }
+
+  const hostname = window.location.hostname;
+  return `http://${hostname}:5000`;
+};
+
+const SOCKET_URL = getSocketUrl();
 
 class SocketService {
   constructor() {

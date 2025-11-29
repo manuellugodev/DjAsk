@@ -1,7 +1,17 @@
 import axios from 'axios';
 
-// In Docker, connect directly to localhost:5000 from browser
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Dynamically use the same host that served the page, but port 5000 for API
+// This works both for localhost and network IP (e.g., 192.168.1.72)
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
+  const hostname = window.location.hostname;
+  return `http://${hostname}:5000/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const api = axios.create({
   baseURL: API_BASE_URL,
