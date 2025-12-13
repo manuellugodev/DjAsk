@@ -1,18 +1,27 @@
-FROM node:18-alpine
-
+# Build stage
+FROM node:18-alpine AS builder
 WORKDIR /app
 
-# Copy package files
-COPY package.json .
+COPY package.json package-lock.json* ./
+RUN npm ci || npm install
 
-# Install dependencies
-RUN npm install
-
-# Copy application code
 COPY . .
+RUN npm run build
 
-# Expose port
-EXPOSE 3001
+# Runtime stage
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Run the development server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+RUN printf '%s\n' \
+'server {' \
+'  listen 80;' \
+'  server_name _;' \
+'  root /usr/share/nginx/html;' \
+'  index index.html;' \
+'  location / {' \
+'    try_files $uri $uri/ /index.html;' \
+'  }' \
+'}' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

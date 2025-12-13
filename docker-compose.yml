@@ -4,49 +4,101 @@ services:
   backend:
     build: ./backend
     container_name: djask-backend
-    ports:
-      - "5000:5000"
+    restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      - SECRET_KEY=your-secret-key-change-in-production
-      - DATABASE_URL=sqlite:///djask.db
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - FLASK_ENV=production
     volumes:
-      - ./backend:/app
       - backend-db:/app
     networks:
       - djask-network
-    restart: unless-stopped
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+      - "traefik.http.routers.djask-backend.rule=Host(`dj.manuellugo.dev`) && (PathPrefix(`/api`) || PathPrefix(`/socket.io`))"
+      - "traefik.http.routers.djask-backend.entrypoints=websecure"
+      - "traefik.http.routers.djask-backend.tls=true"
+      - "traefik.http.routers.djask-backend.tls.certresolver=le"
+      - "traefik.http.routers.djask-backend.service=djask-backend"
+      - "traefik.http.services.djask-backend.loadbalancer.server.port=5000"
 
   frontend-manager:
-    build: ./frontend-manager
+    build:
+      context: ./frontend-manager
+      args:
+        VITE_API_URL: "https://dj.manuellugo.dev/api"
+        VITE_SOCKET_URL: "https://dj.manuellugo.dev"
     container_name: djask-manager
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend-manager:/app
-      - /app/node_modules
+    restart: unless-stopped
     depends_on:
       - backend
+    environment:
+      - VITE_API_URL=https://dj.manuellugo.dev/api
+      - VITE_SOCKET_URL=https://dj.manuellugo.dev
     networks:
       - djask-network
-    restart: unless-stopped
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+
+      - "traefik.http.routers.djask-admin-web.rule=Host(`admin.dj.manuellugo.dev`)"
+      - "traefik.http.routers.djask-admin-web.entrypoints=web"
+      - "traefik.http.routers.djask-admin-web.middlewares=redirect-https"
+
+      - "traefik.http.routers.djask-admin-secure.rule=Host(`admin.dj.manuellugo.dev`)"
+      - "traefik.http.routers.djask-admin-secure.entrypoints=websecure"
+      - "traefik.http.routers.djask-admin-secure.tls=true"
+      - "traefik.http.routers.djask-admin-secure.tls.certresolver=le"
+      - "traefik.http.routers.djask-admin-secure.service=djask-manager"
+
+      - "traefik.http.services.djask-manager.loadbalancer.server.port=80"
+
+      # shared middleware definition (used by both admin + public HTTP routers)
+      - "traefik.http.middlewares.redirect-https.redirectscheme.scheme=https"
 
   frontend-public:
-    build: ./frontend-public
+    build:
+      context: ./frontend-public
+      args:
+        VITE_API_URL: "https://dj.manuellugo.dev/api"
+        VITE_SOCKET_URL: "https://dj.manuellugo.dev"
     container_name: djask-public
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./frontend-public:/app
-      - /app/node_modules
+    restart: unless-stopped
     depends_on:
       - backend
+    environment:
+      - VITE_API_URL=https://dj.manuellugo.dev/api
+      - VITE_SOCKET_URL=https://dj.manuellugo.dev
     networks:
       - djask-network
-    restart: unless-stopped
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=traefik-public"
+
+      - "traefik.http.routers.djask-web.rule=Host(`dj.manuellugo.dev`) && !PathPrefix(`/api`) && !PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.djask-web.entrypoints=web"
+      - "traefik.http.routers.djask-web.middlewares=redirect-https"
+
+      - "traefik.http.routers.djask-secure.rule=Host(`dj.manuellugo.dev`) && !PathPrefix(`/api`) && !PathPrefix(`/socket.io`)"
+      - "traefik.http.routers.djask-secure.entrypoints=websecure"
+      - "traefik.http.routers.djask-secure.tls=true"
+      - "traefik.http.routers.djask-secure.tls.certresolver=le"
+      - "traefik.http.routers.djask-secure.service=djask-public"
+
+      - "traefik.http.services.djask-public.loadbalancer.server.port=80"
 
 volumes:
   backend-db:
+    driver: local
 
 networks:
   djask-network:
     driver: bridge
+  traefik-public:
+    external: true
