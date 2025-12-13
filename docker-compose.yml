@@ -12,7 +12,7 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - FLASK_ENV=production
     volumes:
-      - backend-db:/app
+      - backend-db:/app/data
     networks:
       - djask-network
       - traefik-public

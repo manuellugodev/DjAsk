@@ -6,7 +6,7 @@ from sqlalchemy import func
 import json
 
 analytics_bp = Blueprint('analytics', __name__)
-analytics_bp.url_map.strict_slashes = False
+#analytics_bp.url_map.strict_slashes = False
 
 @analytics_bp.route('/<int:poll_id>/', methods=['GET'])
 @analytics_bp.route('/<int:poll_id>', methods=['GET'])

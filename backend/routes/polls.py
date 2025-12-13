@@ -6,7 +6,7 @@ from flask_socketio import SocketIO
 from datetime import datetime
 
 polls_bp = Blueprint('polls', __name__)
-polls_bp.url_map.strict_slashes = False
+#polls_bp.url_map.strict_slashes = False
 
 # This will be set from app.py
 socketio = None

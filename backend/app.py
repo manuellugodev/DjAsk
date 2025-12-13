@@ -4,11 +4,12 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime
 import os
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 # Disable strict slashes to prevent 308 redirects
-app.url_map.strict_slashes = False
+#app.url_map.strict_slashes = true
 
 # Configure CORS to allow all origins and methods
 CORS(app, resources={
