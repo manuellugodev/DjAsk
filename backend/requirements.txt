@@ -6,3 +6,5 @@ python-socketio==5.10.0
 python-engineio==4.8.0
 SQLAlchemy==2.0.23
 eventlet==0.33.3
+PyJWT==2.8.0
+python-dotenv==1.0.0

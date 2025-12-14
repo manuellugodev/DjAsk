@@ -4,13 +4,15 @@ from models.poll import Poll
 from models.response import Response
 from sqlalchemy import func
 import json
+from utils.jwt_utils import token_required
 
 analytics_bp = Blueprint('analytics', __name__)
 #analytics_bp.url_map.strict_slashes = False
 
 @analytics_bp.route('/<int:poll_id>/', methods=['GET'])
 @analytics_bp.route('/<int:poll_id>', methods=['GET'])
-def get_poll_analytics(poll_id):
+@token_required
+def get_poll_analytics(current_admin, poll_id):
     """Get analytics for a specific poll"""
     poll = Poll.query.get_or_404(poll_id)
 
@@ -68,7 +70,8 @@ def get_poll_analytics(poll_id):
 
 @analytics_bp.route('/summary/', methods=['GET'])
 @analytics_bp.route('/summary', methods=['GET'])
-def get_summary():
+@token_required
+def get_summary(current_admin):
     """Get summary analytics for all polls"""
     total_polls = Poll.query.count()
     active_polls = Poll.query.filter_by(is_active=True).count()

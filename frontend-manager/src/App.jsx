@@ -1,20 +1,26 @@
 import { useState, useEffect } from 'react';
 import { pollAPI, analyticsAPI } from './services/api';
+import { useAuth } from './contexts/AuthContext';
+import Header from './components/Header';
+import Login from './components/Login';
 import CreatePoll from './components/CreatePoll';
 import PollList from './components/PollList';
 import Analytics from './components/Analytics';
 import './App.css';
 
 function App() {
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [polls, setPolls] = useState([]);
   const [selectedPoll, setSelectedPoll] = useState(null);
   const [view, setView] = useState('list'); // 'list', 'create', 'analytics'
   const [summary, setSummary] = useState(null);
 
   useEffect(() => {
-    loadPolls();
-    loadSummary();
-  }, []);
+    if (isAuthenticated) {
+      loadPolls();
+      loadSummary();
+    }
+  }, [isAuthenticated]);
 
   const loadPolls = async () => {
     try {
@@ -55,12 +61,25 @@ function App() {
     setView('analytics');
   };
 
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // Show login if not authenticated
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  // Show main app if authenticated
   return (
     <div className="App">
-      <header className="app-header">
-        <h1>djask Manager</h1>
-        <p>Interactive Polling System - Admin Panel</p>
-      </header>
+      <Header />
 
       <div className="container">
         {summary && (

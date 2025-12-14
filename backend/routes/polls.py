@@ -4,6 +4,7 @@ from models.poll import Poll
 from models.response import Response
 from flask_socketio import SocketIO
 from datetime import datetime
+from utils.jwt_utils import token_required
 
 polls_bp = Blueprint('polls', __name__)
 #polls_bp.url_map.strict_slashes = False
@@ -38,7 +39,8 @@ def get_poll(poll_id):
 
 @polls_bp.route('/', methods=['POST'])
 @polls_bp.route('', methods=['POST'])
-def create_poll():
+@token_required
+def create_poll(current_admin):
     """Create a new poll"""
     data = request.get_json()
 
@@ -64,7 +66,8 @@ def create_poll():
 
 @polls_bp.route('/<int:poll_id>/', methods=['PUT'])
 @polls_bp.route('/<int:poll_id>', methods=['PUT'])
-def update_poll(poll_id):
+@token_required
+def update_poll(current_admin, poll_id):
     """Update a poll"""
     poll = Poll.query.get_or_404(poll_id)
     data = request.get_json()
@@ -87,7 +90,8 @@ def update_poll(poll_id):
 
 @polls_bp.route('/<int:poll_id>/', methods=['DELETE'])
 @polls_bp.route('/<int:poll_id>', methods=['DELETE'])
-def delete_poll(poll_id):
+@token_required
+def delete_poll(current_admin, poll_id):
     """Delete a poll"""
     poll = Poll.query.get_or_404(poll_id)
     db.session.delete(poll)
@@ -133,7 +137,8 @@ def submit_response(poll_id):
 
 @polls_bp.route('/<int:poll_id>/responses/', methods=['GET'])
 @polls_bp.route('/<int:poll_id>/responses', methods=['GET'])
-def get_responses(poll_id):
+@token_required
+def get_responses(current_admin, poll_id):
     """Get all responses for a poll"""
     poll = Poll.query.get_or_404(poll_id)
     responses = Response.query.filter_by(poll_id=poll_id).order_by(Response.created_at.desc()).all()

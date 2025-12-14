@@ -20,6 +20,40 @@ const api = axios.create({
   },
 });
 
+// Request interceptor to include JWT token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('djask_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Response interceptor to handle 401 errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired or invalid
+      localStorage.removeItem('djask_token');
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth APIs
+export const authAPI = {
+  login: (credentials) => api.post('/auth/login', credentials),
+  verify: () => api.get('/auth/verify'),
+  logout: () => api.post('/auth/logout'),
+};
+
 // Poll APIs
 export const pollAPI = {
   getAll: (activeOnly = false) => {

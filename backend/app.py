@@ -28,6 +28,7 @@ from config.database import init_db
 # Import models BEFORE initializing database (so tables are created)
 from models.poll import Poll
 from models.response import Response
+from models.admin import Admin
 
 db = init_db(app)
 
@@ -41,6 +42,7 @@ with app.app_context():
 # Import routes
 from routes.polls import polls_bp, set_socketio
 from routes.analytics import analytics_bp
+from routes.auth import auth_bp
 
 # Pass socketio to routes for real-time updates
 set_socketio(socketio)
@@ -48,6 +50,7 @@ set_socketio(socketio)
 # Register blueprints
 app.register_blueprint(polls_bp, url_prefix='/api/polls')
 app.register_blueprint(analytics_bp, url_prefix='/api/analytics')
+app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
 # WebSocket events
 @socketio.on('connect')
