@@ -18,6 +18,11 @@ class SocketService {
   }
 
   connect() {
+    // Reuse existing connection if already connected
+    if (this.socket && this.socket.connected) {
+      return this.socket;
+    }
+
     this.socket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
     });
