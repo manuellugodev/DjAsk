@@ -11,8 +11,7 @@ analytics_bp = Blueprint('analytics', __name__)
 
 @analytics_bp.route('/<int:poll_id>/', methods=['GET'])
 @analytics_bp.route('/<int:poll_id>', methods=['GET'])
-@token_required
-def get_poll_analytics(current_admin, poll_id):
+def get_poll_analytics(poll_id):
     """Get analytics for a specific poll"""
     poll = Poll.query.get_or_404(poll_id)
 
@@ -72,7 +71,7 @@ def get_poll_analytics(current_admin, poll_id):
 @analytics_bp.route('/summary', methods=['GET'])
 @token_required
 def get_summary(current_admin):
-    """Get summary analytics for all polls"""
+    """Get summary analytics for all polls (admin only)"""
     total_polls = Poll.query.count()
     active_polls = Poll.query.filter_by(is_active=True).count()
     total_responses = Response.query.count()
