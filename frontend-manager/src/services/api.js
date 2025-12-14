@@ -13,10 +13,6 @@ const getApiBaseUrl = () => {
 
 const API_BASE_URL = getApiBaseUrl();
 
-// Debug: Log the API URL being used
-console.log('[DEBUG] API Base URL:', API_BASE_URL);
-console.log('[DEBUG] VITE_API_URL env:', import.meta.env.VITE_API_URL);
-
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
