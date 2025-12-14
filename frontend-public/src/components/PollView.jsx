@@ -10,6 +10,7 @@ function PollView({ poll, onBack }) {
   const [submitted, setSubmitted] = useState(false);
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (submitted) {
@@ -56,20 +57,21 @@ function PollView({ poll, onBack }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
     try {
       let answer;
       if (poll.poll_type === 'multiple_choice') {
         answer = poll.allow_multiple ? selectedAnswers : selectedAnswers[0];
         if (!answer || (Array.isArray(answer) && answer.length === 0)) {
-          alert('Please select an answer');
+          setError('Please select an answer');
           setLoading(false);
           return;
         }
       } else {
         answer = textAnswer.trim();
         if (!answer) {
-          alert('Please enter your answer');
+          setError('Please enter your answer');
           setLoading(false);
           return;
         }
@@ -77,9 +79,14 @@ function PollView({ poll, onBack }) {
 
       await pollAPI.submitResponse(poll.id, answer);
       setSubmitted(true);
-    } catch (error) {
-      console.error('Error submitting response:', error);
-      alert('Failed to submit response');
+    } catch (err) {
+      console.error('Error submitting response:', err);
+      // Extract error message from backend response
+      const errorMessage = err.response?.data?.error || 'Failed to submit response. Please try again.';
+      setError(errorMessage);
+
+      // Auto-hide error after 5 seconds
+      setTimeout(() => setError(null), 5000);
     } finally {
       setLoading(false);
     }
@@ -109,6 +116,14 @@ function PollView({ poll, onBack }) {
       <div className="poll-content">
         <h2>{poll.title}</h2>
         {poll.description && <p className="poll-description">{poll.description}</p>}
+
+        {error && (
+          <div className="error-alert">
+            <span className="error-icon">⚠️</span>
+            <span className="error-text">{error}</span>
+            <button className="error-close" onClick={() => setError(null)}>×</button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {poll.poll_type === 'multiple_choice' ? (
