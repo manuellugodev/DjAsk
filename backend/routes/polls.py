@@ -114,8 +114,17 @@ def submit_response(poll_id):
     if not answer:
         return jsonify({'error': 'Answer is required'}), 400
 
-    # Optional: Check for duplicate responses by IP
+    # Check for duplicate responses by IP
     user_identifier = request.remote_addr
+
+    # Check if this user has already voted on this poll
+    existing_response = Response.query.filter_by(
+        poll_id=poll_id,
+        user_identifier=user_identifier
+    ).first()
+
+    if existing_response:
+        return jsonify({'error': 'You have already voted on this poll'}), 400
 
     response = Response(
         poll_id=poll_id,
