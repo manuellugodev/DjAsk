@@ -115,7 +115,11 @@ def submit_response(poll_id):
         return jsonify({'error': 'Answer is required'}), 400
 
     # Check for duplicate responses by IP
-    user_identifier = request.remote_addr
+    # Get real client IP from X-Forwarded-For header (behind proxy)
+    user_identifier = request.headers.get('X-Forwarded-For', request.remote_addr)
+    # If multiple IPs in X-Forwarded-For, get the first one (original client)
+    if ',' in user_identifier:
+        user_identifier = user_identifier.split(',')[0].strip()
 
     # Check if this user has already voted on this poll
     existing_response = Response.query.filter_by(
